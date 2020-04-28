@@ -1,17 +1,19 @@
 package guru.springframework.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 @EqualsAndHashCode(exclude = {"recipes"})
 @Entity
 public class Category {
@@ -22,7 +24,15 @@ public class Category {
 	private String description;
 
 	@ManyToMany(mappedBy = "categories")
-	private Set<Recipe> recipes = new HashSet<>();
+	private Set<Recipe> recipes;
+
+	public Set<Recipe> getRecipes() {
+		if (recipes == null) {
+			recipes = new HashSet<>();
+		}
+
+		return recipes;
+	}
 }
 
 
