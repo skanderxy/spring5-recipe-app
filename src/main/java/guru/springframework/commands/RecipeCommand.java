@@ -2,12 +2,14 @@ package guru.springframework.commands;
 
 import guru.springframework.domain.Difficulty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@NoArgsConstructor
 @SuperBuilder
 public class RecipeCommand {
 	private Long id;
@@ -38,5 +40,12 @@ public class RecipeCommand {
 		}
 
 		return categories;
+	}
+
+	public NotesCommand getNotes() {
+		if (notes == null) {
+			notes = NotesCommand.builder().build();
+		}
+		return notes;
 	}
 }

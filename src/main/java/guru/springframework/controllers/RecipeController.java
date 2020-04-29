@@ -1,10 +1,13 @@
 package guru.springframework.controllers;
 
+import guru.springframework.commands.RecipeCommand;
 import guru.springframework.services.RecipeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class RecipeController {
@@ -15,9 +18,32 @@ public class RecipeController {
 		this.recipeService = recipeService;
 	}
 
-	@GetMapping(path = "/recipe/show/{id}")
+	@GetMapping(path = "/recipe/{id}/show")
 	public String showById(@PathVariable String id, Model model) {
 		model.addAttribute("recipe", recipeService.findById(Long.valueOf(id)));
 		return "recipe/show";
+	}
+
+	@GetMapping(path = "recipe/new")
+	public String newRecipe(Model model) {
+		model.addAttribute("recipe", RecipeCommand.builder().build());
+
+		return "recipe/recipeform";
+	}
+
+
+	@GetMapping(path = "recipe/{id}/update")
+	public String updateRecipe(@PathVariable String id, Model model) {
+		final RecipeCommand recipeCommand = recipeService.findRecipeCommandById(Long.valueOf(id));
+		model.addAttribute("recipe", recipeCommand);
+
+		return "recipe/recipeform";
+	}
+
+	@PostMapping(path = "recipe")
+	public String saveOrUpdate(@ModelAttribute RecipeCommand recipeCommand) {
+		final RecipeCommand savedRecipeCommand = recipeService.saveRecipeCommand(recipeCommand);
+
+		return "redirect:/recipe/" + savedRecipeCommand.getId() + "/show";
 	}
 }
